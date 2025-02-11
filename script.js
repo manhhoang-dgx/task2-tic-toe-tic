@@ -193,17 +193,20 @@ function cellClickedHandler(e) {
       tickWinner.textContent = "O";
     }
     textWinner.textContent = "Chiến thắng!";
-
-    playGrid.classList.add("game-over");
-    playResult.classList.add("play-result-game-over");
+    setTimeout(() => {
+      playGrid.classList.add("game-over");
+      playResult.classList.add("play-result-game-over");
+    }, 1000);
     return;
   }
   if (ticked === 9) {
     drawCount++;
     tickWinner.textContent = "X O";
     textWinner.textContent = "Hòa!";
-    playGrid.classList.add("game-over");
-    playResult.classList.add("play-result-game-over");
+    setTimeout(() => {
+      playGrid.classList.add("game-over");
+      playResult.classList.add("play-result-game-over");
+    }, 1000);
     return;
   }
 
