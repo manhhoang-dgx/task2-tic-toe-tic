@@ -28,6 +28,7 @@ let drawCount = 0;
 let machineTick = 0;
 let machineFirstTick = 2;
 let freshGame = true;
+let lastWinnerCheck = [];
 configFirstGame(playWith.value);
 
 function removeScoreViewEvent() {
@@ -57,6 +58,7 @@ function checkWinner() {
       gridMem[j] != 0
     ) {
       winner = gridMem[j];
+      lastWinnerCheck = [j, j + 1, j + 2];
 
       return winner;
     }
@@ -66,14 +68,18 @@ function checkWinner() {
       gridMem[i] != 0
     ) {
       winner = gridMem[i];
+      lastWinnerCheck = [i, i + 3, i + 6];
+
       return winner;
     }
   }
   if (gridMem[0] == gridMem[4] && gridMem[0] == gridMem[8] && gridMem[0] != 0) {
     winner = gridMem[0];
+    lastWinnerCheck = [0, 4, 8];
   }
   if (gridMem[2] == gridMem[4] && gridMem[2] == gridMem[6] && gridMem[2] != 0) {
     winner = gridMem[2];
+    lastWinnerCheck = [2, 4, 6];
   }
   return winner;
 }
@@ -159,6 +165,23 @@ function createTick(tickClass, tickImgSrc) {
   return tmp;
 }
 
+function showWinningCell() {
+  console.log(lastWinnerCheck);
+  lastWinnerCheck.forEach((id) => {
+    let tmp = document.querySelector(`#cell-${id}`);
+    tmp.classList.add("cell-win");
+    console.log(tmp.classList);
+  });
+}
+
+function hideWinningCell() {
+  console.log(lastWinnerCheck);
+  lastWinnerCheck.forEach((id) => {
+    let tmp = document.querySelector(`#cell-${id}`);
+    tmp.classList.remove("cell-win");
+  });
+}
+
 function cellClickedHandler(e) {
   let id = Number(e.currentTarget.id.replace(/[^0-9]/g, ""));
   if (gridMem[id]) return;
@@ -193,6 +216,7 @@ function cellClickedHandler(e) {
       tickWinner.textContent = "O";
     }
     textWinner.textContent = "Chiến thắng!";
+    showWinningCell();
     setTimeout(() => {
       playGrid.classList.add("game-over");
       playResult.classList.add("play-result-game-over");
@@ -220,15 +244,19 @@ function startGame() {
   freshGame = false;
   ticked = 0;
   gridMem = [];
+
+  hideWinningCell();
   playGrid.classList.remove("game-over");
   playResult.classList.remove("play-result-game-over");
   ticks = document.querySelectorAll(".tick");
   ticks.forEach((tick) => tick.remove());
+
   cells.forEach((cell) => {
     gridMem.push(0);
     cell.removeEventListener("click", startGame);
     cell.addEventListener("click", cellClickedHandler);
   });
+
   triggerMachinePlay();
 }
 
