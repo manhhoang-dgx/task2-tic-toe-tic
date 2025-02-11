@@ -26,11 +26,31 @@ let scoreXValue = 0;
 let scoreYValue = 0;
 let drawCount = 0;
 let machineTick = 0;
-startGame();
+let machineFirstTick = 2;
+configFirstGame(playWith.value);
+
+function configMachineFirstTick() {
+  machineFirstTick = 2;
+  configFirstGame(playWith.value);
+  //console.log("configFirstTick");
+  scoreViewX.removeEventListener("click", configMachineFirstTick);
+  scoreViewY.removeEventListener("click", configMachineSecondTick);
+}
+
+function configMachineSecondTick() {
+  machineFirstTick = 1;
+  configFirstGame(playWith.value);
+  //console.log("configMachineSecondTick");
+  scoreViewX.removeEventListener("click", configMachineFirstTick);
+  scoreViewY.removeEventListener("click", configMachineSecondTick);
+}
+
+scoreViewX.addEventListener("click", configMachineFirstTick);
+scoreViewY.addEventListener("click", configMachineSecondTick);
 
 function checkWinner() {
   let winner = 0;
-  console.log(gridMem);
+  //console.log(gridMem);
   for (let i = 0; i < 3; i++) {
     let j = i * 3;
     if (
@@ -133,10 +153,10 @@ function triggerMachinePlay() {
 }
 
 function cellClickedHandler(e) {
-  console.log(e.currentTarget.classList);
+  //   console.log(e.currentTarget.classList);
   let id = Number(e.currentTarget.id.replace(/[^0-9]/g, ""));
-  console.log(id);
-  console.log(gridMem[id]);
+  //   console.log(id);
+  //   console.log(gridMem[id]);
   if (gridMem[id]) return;
 
   ticked++;
@@ -190,7 +210,9 @@ function cellClickedHandler(e) {
   }
 
   changeWhosTurn();
-  triggerMachinePlay();
+  setTimeout(() => {
+    triggerMachinePlay();
+  }, 1000);
 }
 
 function startGame() {
@@ -207,12 +229,17 @@ function startGame() {
     cell.removeEventListener("click", startGame);
     cell.addEventListener("click", cellClickedHandler);
   });
-  triggerMachinePlay();
+  setTimeout(() => {
+    triggerMachinePlay();
+  }, 1000);
 }
 
-playWith.addEventListener("change", (e) => {
-  if (e.target.value === "machine") {
-    machineTick = 2;
+function configFirstGame(mode) {
+  console.log(mode);
+  console.log(machineFirstTick);
+  if (mode === "machine") {
+    machineTick = machineFirstTick;
+    console.log("machine mode");
   } else {
     machineTick = 0;
   }
@@ -223,6 +250,10 @@ playWith.addEventListener("change", (e) => {
   scoreY.textContent = "-";
   gridMem = [];
   startGame();
+}
+
+playWith.addEventListener("change", (e) => {
+  configFirstGame(e.target.value);
 });
 
 restartBtn.addEventListener("click", () => {
