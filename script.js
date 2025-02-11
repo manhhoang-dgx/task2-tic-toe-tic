@@ -22,25 +22,37 @@ let xTurn = true;
 let ticked = 0;
 let scoreXValue = 0;
 let scoreYValue = 0;
+let drawCount = 0;
+let yTurnFirst = 0;
 startGame();
 
 function checkWinner() {
   let winner = 0;
+  console.log(gridMem);
   for (let i = 0; i < 3; i++) {
     let j = i * 3;
-    if (gridMem[j] == gridMem[j + 1] && gridMem[j] == gridMem[j + 2]) {
+    if (
+      gridMem[j] == gridMem[j + 1] &&
+      gridMem[j] == gridMem[j + 2] &&
+      gridMem[j] != 0
+    ) {
       winner = gridMem[j];
-      break;
+
+      return winner;
     }
-    if (gridMem[i] == gridMem[i + 3] && gridMem[i] == gridMem[i + 6]) {
+    if (
+      gridMem[i] == gridMem[i + 3] &&
+      gridMem[i] == gridMem[i + 6] &&
+      gridMem[i] != 0
+    ) {
       winner = gridMem[i];
-      break;
+      return winner;
     }
   }
-  if (gridMem[0] == gridMem[4] && gridMem[0] == gridMem[8]) {
+  if (gridMem[0] == gridMem[4] && gridMem[0] == gridMem[8] && gridMem[0] != 0) {
     winner = gridMem[0];
   }
-  if (gridMem[2] == gridMem[4] && gridMem[2] == gridMem[6]) {
+  if (gridMem[2] == gridMem[4] && gridMem[2] == gridMem[6] && gridMem[2] != 0) {
     winner = gridMem[2];
   }
   return winner;
@@ -72,9 +84,17 @@ function cellClickedHandler(e) {
   if (xTurn) {
     gridMem[id] = 1;
     tmp.classList.add("tick-x");
+    let childimg = document.createElement("img");
+    childimg.src = "svg/x-tick-lg.svg";
+    childimg.classList.add("tick-img");
+    tmp.appendChild(childimg);
   } else {
     gridMem[id] = 2;
     tmp.classList.add("tick-y");
+    let childimg = document.createElement("img");
+    childimg.src = "svg/o-tick-lg.svg";
+    childimg.classList.add("tick-img");
+    tmp.appendChild(childimg);
   }
 
   xTurn = !xTurn;
@@ -95,7 +115,7 @@ function cellClickedHandler(e) {
       scoreY.textContent = scoreYValue;
       tickWinner.textContent = "O";
     }
-    textWinner.textContent = "Chiến thắng";
+    textWinner.textContent = "Chiến thắng!";
     playGrid.classList.add("game-over");
     playResult.classList.add("play-result-game-over");
     return;
@@ -104,14 +124,16 @@ function cellClickedHandler(e) {
     playGrid.classList.add("game-over");
     playResult.classList.add("play-result-game-over");
     tickWinner.textContent = "X O";
-    textWinner.textContent = "Hòa";
+    textWinner.textContent = "Hòa!";
+    drawCount++;
   }
 
   changeWhosTurn();
 }
 
 function startGame() {
-  xTurn = (scoreXValue + scoreYValue) % 2 ? false : true;
+  xTurn =
+    (scoreXValue + scoreYValue + drawCount + yTurnFirst) % 2 ? false : true;
   changeWhosTurn();
 
   ticked = 0;
