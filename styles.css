@@ -1,0 +1,133 @@
+.tic-toe-tic {
+  width: 650px;
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  color: #5e5e5e;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.information {
+  height: 124px;
+  padding: 12px 16px;
+}
+
+.option {
+  display: flex;
+}
+
+.play-with {
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.share {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.score-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.score {
+  border-radius: 6px;
+  display: flex;
+  border: 1px solid gainsboro;
+  margin: 20px 4px;
+  padding: 7px 24px;
+  width: 150px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.score-turn {
+  border-bottom: 2px solid #14bdac;
+  box-shadow: 0 4px 8px lightgray;
+}
+
+.score-num {
+  margin-left: auto;
+}
+
+.whos-turn {
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.play-field {
+  padding: 12px 0;
+  height: fit-content;
+  background-color: #14bdac;
+}
+
+.play-grid {
+  display: grid;
+  margin: auto;
+  width: fit-content;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  gap: 6px;
+  background-color: #27988d;
+}
+
+.cell {
+  width: 64px;
+  height: 64px;
+  padding: 8px;
+  background-color: #14bdac;
+}
+
+.tick {
+  width: 100%;
+  height: 100%;
+  border: 1px solid red;
+}
+
+.tick-x {
+  width: 100%;
+  height: 100%;
+  border: 1px solid red;
+}
+
+.tick-y {
+  width: 100%;
+  height: 100%;
+  border: 1px solid blue;
+}
+
+.restart {
+  padding: 7px 24px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  color: #14bdac;
+  cursor: pointer;
+}
+
+.game-over {
+  display: none;
+}
+
+.play-result {
+  display: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: xx-large;
+}
+
+.play-result-game-over {
+  width: 252px;
+  height: 252px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

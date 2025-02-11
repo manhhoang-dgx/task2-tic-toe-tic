@@ -4,23 +4,57 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Toe Tic</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="tic-toe-tic">
       <div class="information">
-        <div class="score">
-          <div id="score-x"></div>
+        <div class="option">
+          <div class="play-with">Chơi với bạn bè</div>
+          <div class="share">
+            <img src="svg/share.svg" alt="share" />
+          </div>
         </div>
-        <div class="score">
-          <div id="score-y"></div>
+        <div class="score-view">
+          <div class="score score-turn" id="score-view-x">
+            <div class="svg">X</div>
+            <div class="score-num" id="score-x">-</div>
+          </div>
+          <div class="score" id="score-view-y">
+            <div class="svg">O</div>
+            <div class="score-num" id="score-y">-</div>
+          </div>
+        </div>
+        <div class="whos-turn">
+          <div class="whos-turn-text">
+            Bắt đầu trò chơi hoặc chọn người chơi
+          </div>
+          <div class="svg" id="whos-turn-info"></div>
         </div>
       </div>
       <div class="play-field">
         <div class="play-grid">
-          <div class="x-tick"></div>
-          <div class="y-tick"></div>
+          <div class="cell" id="cell-0">
+            <div class="tick tick-x">X</div>
+          </div>
+          <div class="cell" id="cell-1">
+            <div class="tick tick-y">O</div>
+          </div>
+          <div class="cell" id="cell-2"></div>
+          <div class="cell" id="cell-3"></div>
+          <div class="cell" id="cell-4"></div>
+          <div class="cell" id="cell-5"></div>
+          <div class="cell" id="cell-6"></div>
+          <div class="cell" id="cell-7"></div>
+          <div class="cell" id="cell-8"></div>
+        </div>
+        <div class="play-result">
+          <div id="tick-winner">X</div>
+          <div id="text-winner">chiến thắng!</div>
         </div>
       </div>
+      <div class="restart" id="restart">Khởi động lại trò chơi</div>
     </div>
   </body>
+  <script src="script.js"></script>
 </html>
