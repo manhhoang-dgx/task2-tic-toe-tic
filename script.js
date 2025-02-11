@@ -27,6 +27,7 @@ let scoreYValue = 0;
 let drawCount = 0;
 let machineTick = 0;
 let machineFirstTick = 2;
+let freshGame = true;
 configFirstGame(playWith.value);
 
 function removeScoreViewEvent() {
@@ -212,7 +213,8 @@ function cellClickedHandler(e) {
 
 function startGame() {
   xTurn = (scoreXValue + scoreYValue + drawCount) % 2 ? false : true;
-  changeWhosTurn();
+  if (!freshGame) changeWhosTurn();
+  freshGame = false;
   ticked = 0;
   gridMem = [];
   playGrid.classList.remove("game-over");
@@ -229,8 +231,11 @@ function startGame() {
 
 function configFirstGame(mode) {
   if (mode === "machine") {
+    if (freshGame) {
+      whosTurnText.textContent = "Bắt đầu trò chơi hoặc chọn người chơi";
+      whosTurnInfo.textContent = "";
+    }
     machineTick = machineFirstTick;
-    console.log("machine mode");
   } else {
     machineTick = 0;
   }
@@ -247,6 +252,7 @@ scoreViewX.addEventListener("click", configMachineFirstTick);
 scoreViewY.addEventListener("click", configMachineSecondTick);
 
 playWith.addEventListener("change", (e) => {
+  if (e.target.value === "machine") freshGame = true;
   configFirstGame(e.target.value);
 });
 
