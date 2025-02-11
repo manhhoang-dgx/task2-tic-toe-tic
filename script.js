@@ -75,7 +75,7 @@ function changeWhosTurn() {
 
 function machinePlay() {
   let machineChoice = 4;
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 9; i++) {
     if (gridMem[i] === 0) {
       machineChoice = i;
     }
@@ -86,7 +86,7 @@ function machinePlay() {
       machineChoice = 1;
     }
   } else {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       if (gridMem[i] === 0) {
         gridMem[i] = machineTick;
         if (checkWinner() === machineTick) {
@@ -98,7 +98,7 @@ function machinePlay() {
     }
 
     let myTick = machineTick === 1 ? 2 : 1;
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j < 9; j++) {
       if (gridMem[j] === 0) {
         gridMem[j] = myTick;
         if (checkWinner() === myTick) {
@@ -120,6 +120,8 @@ function triggerMachinePlay() {
     if (!xTurn && machineTick !== 2) {
       return;
     }
+  } else {
+    return;
   }
   let machineChoice = machinePlay();
   let machineChoiceElemenet = document.querySelector(`#cell-${machineChoice}`);
@@ -219,6 +221,7 @@ playWith.addEventListener("change", (e) => {
   drawCount = 0;
   scoreX.textContent = "-";
   scoreY.textContent = "-";
+  gridMem = [];
   startGame();
 });
 
