@@ -166,16 +166,13 @@ function createTick(tickClass, tickImgSrc) {
 }
 
 function showWinningCell() {
-  console.log(lastWinnerCheck);
   lastWinnerCheck.forEach((id) => {
     let tmp = document.querySelector(`#cell-${id}`);
     tmp.classList.add("cell-win");
-    console.log(tmp.classList);
   });
 }
 
 function hideWinningCell() {
-  console.log(lastWinnerCheck);
   lastWinnerCheck.forEach((id) => {
     let tmp = document.querySelector(`#cell-${id}`);
     tmp.classList.remove("cell-win");
