@@ -1,3 +1,5 @@
+const playWith = document.querySelector("#play-with");
+
 const scoreView = document.querySelector(".score-view");
 const scoreViewX = document.querySelector("#score-view-x");
 const scoreViewY = document.querySelector("#score-view-y");
@@ -23,7 +25,7 @@ let ticked = 0;
 let scoreXValue = 0;
 let scoreYValue = 0;
 let drawCount = 0;
-let yTurnFirst = 0;
+let machineTick = 0;
 startGame();
 
 function checkWinner() {
@@ -69,6 +71,63 @@ function changeWhosTurn() {
     scoreViewY.classList.add("score-turn");
     scoreViewX.classList.remove("score-turn");
   }
+}
+
+function machinePlay() {
+  let machineChoice = 4;
+  for (let i = 0; i < 8; i++) {
+    if (gridMem[i] === 0) {
+      machineChoice = i;
+    }
+  }
+  if (ticked < 2) {
+    machineChoice = 4;
+    if (gridMem[4] !== 0) {
+      machineChoice = 1;
+    }
+  } else {
+    for (let i = 0; i < 8; i++) {
+      if (gridMem[i] === 0) {
+        gridMem[i] = machineTick;
+        if (checkWinner() === machineTick) {
+          gridMem[i] = 0;
+          return i;
+        }
+        gridMem[i] = 0;
+      }
+    }
+
+    let myTick = machineTick === 1 ? 2 : 1;
+    for (let j = 0; j < 8; j++) {
+      if (gridMem[j] === 0) {
+        gridMem[j] = myTick;
+        if (checkWinner() === myTick) {
+          gridMem[j] = 0;
+          return j;
+        }
+        gridMem[j] = 0;
+      }
+    }
+  }
+  return machineChoice;
+}
+
+function triggerMachinePlay() {
+  if (machineTick !== 0) {
+    if (xTurn && machineTick !== 1) {
+      return;
+    }
+    if (!xTurn && machineTick !== 2) {
+      return;
+    }
+  }
+  let machineChoice = machinePlay();
+  let machineChoiceElemenet = document.querySelector(`#cell-${machineChoice}`);
+  let event;
+  if (window.CustomEvent && typeof window.CustomEvent === "function") {
+    event = new CustomEvent("click");
+  }
+  machineChoiceElemenet.dispatchEvent(event);
 }
 
 function cellClickedHandler(e) {
@@ -129,13 +188,12 @@ function cellClickedHandler(e) {
   }
 
   changeWhosTurn();
+  triggerMachinePlay();
 }
 
 function startGame() {
-  xTurn =
-    (scoreXValue + scoreYValue + drawCount + yTurnFirst) % 2 ? false : true;
+  xTurn = (scoreXValue + scoreYValue + drawCount) % 2 ? false : true;
   changeWhosTurn();
-
   ticked = 0;
   gridMem = [];
   playGrid.classList.remove("game-over");
@@ -144,9 +202,25 @@ function startGame() {
   ticks.forEach((tick) => tick.remove());
   cells.forEach((cell) => {
     gridMem.push(0);
+    cell.removeEventListener("click", startGame);
     cell.addEventListener("click", cellClickedHandler);
   });
+  triggerMachinePlay();
 }
+
+playWith.addEventListener("change", (e) => {
+  if (e.target.value === "machine") {
+    machineTick = 2;
+  } else {
+    machineTick = 0;
+  }
+  scoreXValue = 0;
+  scoreYValue = 0;
+  drawCount = 0;
+  scoreX.textContent = "-";
+  scoreY.textContent = "-";
+  startGame();
+});
 
 restartBtn.addEventListener("click", () => {
   startGame();

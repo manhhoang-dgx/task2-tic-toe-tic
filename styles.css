@@ -15,7 +15,13 @@
   display: flex;
 }
 
+select:focus {
+  border: 0px;
+}
+
 .play-with {
+  color: #5e5e5e;
+  border: 0px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
