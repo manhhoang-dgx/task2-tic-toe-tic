@@ -29,28 +29,25 @@ let machineTick = 0;
 let machineFirstTick = 2;
 configFirstGame(playWith.value);
 
+function removeScoreViewEvent() {
+  scoreViewX.removeEventListener("click", configMachineFirstTick);
+  scoreViewY.removeEventListener("click", configMachineSecondTick);
+}
+
 function configMachineFirstTick() {
   machineFirstTick = 2;
   configFirstGame(playWith.value);
-  //console.log("configFirstTick");
-  scoreViewX.removeEventListener("click", configMachineFirstTick);
-  scoreViewY.removeEventListener("click", configMachineSecondTick);
+  removeScoreViewEvent();
 }
 
 function configMachineSecondTick() {
   machineFirstTick = 1;
   configFirstGame(playWith.value);
-  //console.log("configMachineSecondTick");
-  scoreViewX.removeEventListener("click", configMachineFirstTick);
-  scoreViewY.removeEventListener("click", configMachineSecondTick);
+  removeScoreViewEvent();
 }
-
-scoreViewX.addEventListener("click", configMachineFirstTick);
-scoreViewY.addEventListener("click", configMachineSecondTick);
 
 function checkWinner() {
   let winner = 0;
-  //console.log(gridMem);
   for (let i = 0; i < 3; i++) {
     let j = i * 3;
     if (
@@ -80,17 +77,34 @@ function checkWinner() {
   return winner;
 }
 
+function changeActiveScoreView(scoreViewNew, scoreViewOld) {
+  scoreViewNew.classList.add("score-turn");
+  scoreViewOld.classList.remove("score-turn");
+}
+
 function changeWhosTurn() {
   whosTurnText.textContent = "Lượt của";
   if (xTurn) {
     whosTurnInfo.textContent = "X";
-    scoreViewX.classList.add("score-turn");
-    scoreViewY.classList.remove("score-turn");
+    changeActiveScoreView(scoreViewX, scoreViewY);
   } else {
     whosTurnInfo.textContent = "O";
-    scoreViewY.classList.add("score-turn");
-    scoreViewX.classList.remove("score-turn");
+    changeActiveScoreView(scoreViewY, scoreViewX);
   }
+}
+
+function bestMove(currentTick) {
+  for (let i = 0; i < 9; i++) {
+    if (gridMem[i] === 0) {
+      gridMem[i] = currentTick;
+      if (checkWinner() === currentTick) {
+        gridMem[i] = 0;
+        return i;
+      }
+      gridMem[i] = 0;
+    }
+  }
+  return -1;
 }
 
 function machinePlay() {
@@ -106,83 +120,64 @@ function machinePlay() {
       machineChoice = 1;
     }
   } else {
-    for (let i = 0; i < 9; i++) {
-      if (gridMem[i] === 0) {
-        gridMem[i] = machineTick;
-        if (checkWinner() === machineTick) {
-          gridMem[i] = 0;
-          return i;
-        }
-        gridMem[i] = 0;
-      }
-    }
+    let tmp = bestMove(machineTick);
+    if (tmp !== -1) return tmp;
 
     let myTick = machineTick === 1 ? 2 : 1;
-    for (let j = 0; j < 9; j++) {
-      if (gridMem[j] === 0) {
-        gridMem[j] = myTick;
-        if (checkWinner() === myTick) {
-          gridMem[j] = 0;
-          return j;
-        }
-        gridMem[j] = 0;
-      }
-    }
+    tmp = bestMove(myTick);
+    if (tmp !== -1) return tmp;
   }
   return machineChoice;
 }
 
 function triggerMachinePlay() {
-  if (machineTick !== 0) {
-    if (xTurn && machineTick !== 1) {
-      return;
-    }
-    if (!xTurn && machineTick !== 2) {
-      return;
-    }
-  } else {
-    return;
-  }
+  if (machineTick === 0) return;
+  if (xTurn && machineTick !== 1) return;
+  if (!xTurn && machineTick !== 2) return;
+
   let machineChoice = machinePlay();
   let machineChoiceElemenet = document.querySelector(`#cell-${machineChoice}`);
   let event;
   if (window.CustomEvent && typeof window.CustomEvent === "function") {
     event = new CustomEvent("click");
   }
-  machineChoiceElemenet.dispatchEvent(event);
+  setTimeout(() => {
+    machineChoiceElemenet.dispatchEvent(event);
+  }, 500);
+}
+
+function createTick(tickClass, tickImgSrc) {
+  let tmp = document.createElement("div");
+  tmp.classList.add("tick");
+  tmp.classList.add(tickClass);
+
+  let childimg = document.createElement("img");
+  childimg.src = tickImgSrc;
+  childimg.classList.add("tick-img");
+  tmp.appendChild(childimg);
+  return tmp;
 }
 
 function cellClickedHandler(e) {
-  //   console.log(e.currentTarget.classList);
   let id = Number(e.currentTarget.id.replace(/[^0-9]/g, ""));
-  //   console.log(id);
-  //   console.log(gridMem[id]);
   if (gridMem[id]) return;
 
   ticked++;
-  let tmp = document.createElement("div");
-  tmp.classList.add("tick");
+
+  let tmp;
   if (xTurn) {
     gridMem[id] = 1;
-    tmp.classList.add("tick-x");
-    let childimg = document.createElement("img");
-    childimg.src = "svg/x-tick-lg.svg";
-    childimg.classList.add("tick-img");
-    tmp.appendChild(childimg);
+    tmp = createTick("tick-x", "svg/x-tick-lg.svg");
   } else {
     gridMem[id] = 2;
-    tmp.classList.add("tick-y");
-    let childimg = document.createElement("img");
-    childimg.src = "svg/o-tick-lg.svg";
-    childimg.classList.add("tick-img");
-    tmp.appendChild(childimg);
+    tmp = createTick("tick-y", "svg/o-tick-lg.svg");
   }
 
   xTurn = !xTurn;
   e.currentTarget.appendChild(tmp);
   let winner = checkWinner();
+
   if (winner) {
-    console.log("Winner is " + winner);
     cells.forEach((cell) => {
       cell.removeEventListener("click", cellClickedHandler);
     });
@@ -197,22 +192,22 @@ function cellClickedHandler(e) {
       tickWinner.textContent = "O";
     }
     textWinner.textContent = "Chiến thắng!";
+
     playGrid.classList.add("game-over");
     playResult.classList.add("play-result-game-over");
     return;
   }
   if (ticked === 9) {
-    playGrid.classList.add("game-over");
-    playResult.classList.add("play-result-game-over");
+    drawCount++;
     tickWinner.textContent = "X O";
     textWinner.textContent = "Hòa!";
-    drawCount++;
+    playGrid.classList.add("game-over");
+    playResult.classList.add("play-result-game-over");
+    return;
   }
 
   changeWhosTurn();
-  setTimeout(() => {
-    triggerMachinePlay();
-  }, 1000);
+  triggerMachinePlay();
 }
 
 function startGame() {
@@ -229,14 +224,10 @@ function startGame() {
     cell.removeEventListener("click", startGame);
     cell.addEventListener("click", cellClickedHandler);
   });
-  setTimeout(() => {
-    triggerMachinePlay();
-  }, 1000);
+  triggerMachinePlay();
 }
 
 function configFirstGame(mode) {
-  console.log(mode);
-  console.log(machineFirstTick);
   if (mode === "machine") {
     machineTick = machineFirstTick;
     console.log("machine mode");
@@ -251,6 +242,9 @@ function configFirstGame(mode) {
   gridMem = [];
   startGame();
 }
+
+scoreViewX.addEventListener("click", configMachineFirstTick);
+scoreViewY.addEventListener("click", configMachineSecondTick);
 
 playWith.addEventListener("change", (e) => {
   configFirstGame(e.target.value);
