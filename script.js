@@ -29,6 +29,8 @@ let machineTick = 0;
 let machineFirstTick = 2;
 let freshGame = true;
 let lastWinnerCheck = [];
+let switchPlayer = true;
+
 configFirstGame(playWith.value);
 
 function removeScoreViewEvent() {
@@ -37,15 +39,17 @@ function removeScoreViewEvent() {
 }
 
 function configMachineFirstTick() {
+  removeScoreViewEvent();
+  if (!switchPlayer) return;
   machineFirstTick = 2;
   configFirstGame(playWith.value);
-  removeScoreViewEvent();
 }
 
 function configMachineSecondTick() {
+  removeScoreViewEvent();
+  if (!switchPlayer) return;
   machineFirstTick = 1;
   configFirstGame(playWith.value);
-  removeScoreViewEvent();
 }
 
 function checkWinner() {
@@ -180,6 +184,7 @@ function hideWinningCell() {
 }
 
 function cellClickedHandler(e) {
+  switchPlayer = false;
   let id = Number(e.currentTarget.id.replace(/[^0-9]/g, ""));
   if (gridMem[id]) return;
 
