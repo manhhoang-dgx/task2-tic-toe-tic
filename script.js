@@ -158,17 +158,9 @@ function createTick(tickClass, tickImgSrc) {
   return tmp;
 }
 
-function showWinningCell() {
+function toggleWinningCells(show) {
   lastWinnerCheck.forEach((id) => {
-    let tmp = document.querySelector(`#cell-${id}`);
-    tmp.classList.add("cell-win");
-  });
-}
-
-function hideWinningCell() {
-  lastWinnerCheck.forEach((id) => {
-    let tmp = document.querySelector(`#cell-${id}`);
-    tmp.classList.remove("cell-win");
+    document.querySelector(`#cell-${id}`).classList.toggle("cell-win", show);
   });
 }
 
@@ -207,7 +199,7 @@ function cellClickedHandler(e) {
       tickWinner.textContent = "O";
     }
     textWinner.textContent = "Chiến thắng!";
-    showWinningCell();
+    toggleWinningCells(true);
     setTimeout(() => {
       playGrid.classList.add("game-over");
       playResult.classList.add("play-result-game-over");
@@ -236,7 +228,7 @@ function startGame() {
   ticked = 0;
   gridMem = [];
 
-  hideWinningCell();
+  toggleWinningCells(false);
   playGrid.classList.remove("game-over");
   playResult.classList.remove("play-result-game-over");
   ticks = document.querySelectorAll(".tick");
