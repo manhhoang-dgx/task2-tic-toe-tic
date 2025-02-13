@@ -18,6 +18,17 @@ const textWinner = document.querySelector("#text-winner");
 
 const restartBtn = document.querySelector("#restart");
 
+const winConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
 let ticks = document.querySelectorAll(".tick");
 let gridMem = [];
 let xTurn = true;
@@ -53,39 +64,17 @@ function configMachineSecondTick() {
 }
 
 function checkWinner() {
-  let winner = 0;
-  for (let i = 0; i < 3; i++) {
-    let j = i * 3;
+  for (let condition of winConditions) {
     if (
-      gridMem[j] == gridMem[j + 1] &&
-      gridMem[j] == gridMem[j + 2] &&
-      gridMem[j] != 0
+      gridMem[condition[0]] === gridMem[condition[1]] &&
+      gridMem[condition[0]] === gridMem[condition[2]] &&
+      gridMem[condition[0]] !== 0
     ) {
-      winner = gridMem[j];
-      lastWinnerCheck = [j, j + 1, j + 2];
-
-      return winner;
-    }
-    if (
-      gridMem[i] == gridMem[i + 3] &&
-      gridMem[i] == gridMem[i + 6] &&
-      gridMem[i] != 0
-    ) {
-      winner = gridMem[i];
-      lastWinnerCheck = [i, i + 3, i + 6];
-
-      return winner;
+      lastWinnerCheck = condition;
+      return gridMem[condition[0]];
     }
   }
-  if (gridMem[0] == gridMem[4] && gridMem[0] == gridMem[8] && gridMem[0] != 0) {
-    winner = gridMem[0];
-    lastWinnerCheck = [0, 4, 8];
-  }
-  if (gridMem[2] == gridMem[4] && gridMem[2] == gridMem[6] && gridMem[2] != 0) {
-    winner = gridMem[2];
-    lastWinnerCheck = [2, 4, 6];
-  }
-  return winner;
+  return 0;
 }
 
 function changeActiveScoreView(scoreViewNew, scoreViewOld) {
